@@ -18,7 +18,7 @@ module TameTheBeast
           end
         end
 
-        it "should detect that c has not been registered", :focus => true do
+        it "should detect that c has not been registered" do
           lambda { subject.resolve(:for => %w{a b}) }.should raise_error(described_class::Incomplete)
         end
 
