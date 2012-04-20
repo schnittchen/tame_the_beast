@@ -66,6 +66,17 @@ module TameTheBeast
       return true
     end
 
+    def render_dependencies(options = {})
+      format = options[:format] || :hash
+      raise "Unknown format #{format}" unless %w{hash}.include? format.to_s
+
+      hash = Hash[@registry.map do |slot, entry|
+        [slot, entry.dependent_slots]
+      end]
+
+      return hash
+    end
+
     def resolve(options = {})
       inject_dependent_reg_entries
 

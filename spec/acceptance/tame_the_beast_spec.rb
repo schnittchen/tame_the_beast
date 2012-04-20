@@ -185,5 +185,30 @@ module TameTheBeast
         lambda { resolution[:a].some_method }.should raise_error(described_class::StubUsedError)
       end
     end
+
+    describe "render_dependencies" do
+      context "with dependencies a -> b -> c, a -> d" do
+        before(:each) do
+          subject.register(:a, :using => %w{b d})
+          subject.register(:b, :using => :c)
+          subject.register(:c)
+          subject.register(:d)
+        end
+
+        let(:dependencies) { subject.render_dependencies(:format => :hash) }
+
+        it "gives me a nice hash with dependencies" do
+          keys = dependencies.keys
+          keys.sort_by(&:to_s).should == [:a, :b, :c, :d]
+
+          dependencies.each_value.sort_by(&:to_s)
+
+          dependencies[:a].should == [:b, :d]
+          dependencies[:b].should == [:c]
+          dependencies[:c].should be_empty
+          dependencies[:d].should be_empty
+        end
+      end
+    end
   end
 end
