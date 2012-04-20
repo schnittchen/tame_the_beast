@@ -85,6 +85,37 @@ module TameTheBeast
             resolution[:a][:item].should == :a
             resolution[:b][:item].should == :b
           end
+
+          describe ".inject" do
+            it "is chainable" do
+              subject.inject({}).should be_equal(subject)
+            end
+          end
+
+          describe "effect of .inject" do
+            before(:each) do
+              subject.inject :injected => 'injected'
+            end
+
+            it "allows me to resolve for injected objects" do
+              resolution = subject.resolve(:for => %w{injected})
+
+              resolution.should have_key(:injected)
+              resolution[:injected].should == 'injected'
+            end
+
+            it "allows me to use injected object for injecting into another slot object" do
+              subject.register(:x, :using => :injected) do |c|
+                @component_hashes[:x] = c
+                "x"
+              end
+              subject.resolve :for => :x
+
+              chash = @component_hashes[:x]
+              chash.should have_key(:injected)
+              chash[:injected].should == "injected"
+            end
+          end
         end
 
         context "with leaf node c subject to post injection" do

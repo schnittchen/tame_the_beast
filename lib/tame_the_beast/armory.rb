@@ -23,6 +23,14 @@ module TameTheBeast
       return ChainedDSLObject.new reg_entry
     end
 
+    def inject(hash_like)
+      hash_like.each do |slot, object|
+        block = lambda { object }
+        _register(slot, [], block)
+      end
+      return self
+    end
+
     def complete?
       @registry.each do |slot, entry|
         entry.dependent_slots.each do |dependent_slot|
