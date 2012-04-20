@@ -252,6 +252,17 @@ module TameTheBeast
           subject.resolve.keys.sort_by(&:to_s).should == [:a, :b]
         end
       end
+
+      describe ".register(:resolve => true)" do
+        before(:each) do
+          subject.register(:a)
+          subject.register(:b, :resolve => true)
+        end
+
+        it "has the effekt that .resolve will deliver the component" do
+          subject.resolve.keys.should == [:b]
+        end
+      end
     end
   end
 end

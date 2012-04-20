@@ -20,6 +20,7 @@ module TameTheBeast
 
     def register(slot, options = {}, &block)
       using = options.delete(:using) || []
+      @resolve_for << slot if options[:resolve]
       reg_entry = _register(slot, using, block)
       return ChainedDSLObject.new reg_entry
     end
