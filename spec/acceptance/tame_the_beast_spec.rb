@@ -219,5 +219,39 @@ module TameTheBeast
         end
       end
     end
+
+    describe "marking for resolution" do
+      describe ".resolve_for" do
+        before(:each) do
+          subject.register(:a)
+          subject.register(:b)
+          subject.register(:c)
+        end
+
+        it "is chainable" do
+          subject.resolve_for.should be_equal(subject)
+        end
+
+        it "has the effekt that .resolve will deliver the argument(s). pt. 1" do
+          subject.resolve_for :a
+          subject.resolve.keys.should == [:a]
+        end
+
+        it "has the effekt that .resolve will deliver the argument(s). pt. 2" do
+          subject.resolve_for :a
+          subject.resolve(:for => :b).keys.sort_by(&:to_s).should == [:a, :b]
+        end
+
+        it "has the effekt that .resolve will deliver the argument(s). pt. 3" do
+          subject.resolve_for *%w{a b}
+          subject.resolve.keys.sort_by(&:to_s).should == [:a, :b]
+        end
+
+        it "has the effekt that .resolve will deliver the argument(s). pt. 4" do
+          subject.resolve_for %w{a b}
+          subject.resolve.keys.sort_by(&:to_s).should == [:a, :b]
+        end
+      end
+    end
   end
 end

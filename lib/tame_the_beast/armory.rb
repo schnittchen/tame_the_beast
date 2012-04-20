@@ -5,6 +5,7 @@ module TameTheBeast
   class Armory
     def initialize
       @registry = {}
+      @resolve_for = []
     end
 
     class ChainedDSLObject
@@ -77,15 +78,21 @@ module TameTheBeast
       return hash
     end
 
+    def resolve_for(*args)
+      args = args.first if args.first.kind_of? Array
+      @resolve_for += args.map &:to_sym
+      return self
+    end
+
     def resolve(options = {})
       inject_dependent_reg_entries
 
       assert_complete_and_free_of_loops
 
       #do the actual resolution
-      resolve_for = Array(options[:for]).map &:to_sym
+      @resolve_for += Array(options[:for]).map &:to_sym
       #return magic hash here
-      resolution = Hash[resolve_for.map { |key| [key, @registry[key].value] }]
+      resolution = Hash[@resolve_for.map { |key| [key, @registry[key].value] }]
 
       #remove unused entries
       @registry.values.reject(&:constructed?).each { |reg_entry| @registry.delete reg_entry.key }
