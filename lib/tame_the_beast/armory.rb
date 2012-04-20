@@ -98,7 +98,7 @@ module TameTheBeast
 
       @registry.clear
 
-      return resolution
+      return Container[resolution]
     end
 
     private

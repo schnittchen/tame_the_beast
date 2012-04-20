@@ -79,11 +79,20 @@ module TameTheBeast
             @component_hashes[:b].c[:item].should == :c
           end
 
-          it "should return requested components as a hash" do
-            resolution = subject.resolve(:for => %w{a b})
-            resolution.should have(2).items
-            resolution[:a][:item].should == :a
-            resolution[:b][:item].should == :b
+          describe "result" do
+            let(:resolution) { subject.resolve(:for => %w{a b}) }
+
+            it "contains requested components" do
+#              resolution = subject.resolve(:for => %w{a b})
+              resolution.should have(2).items
+              resolution[:a][:item].should == :a
+              resolution[:b][:item].should == :b
+            end
+
+            it "exposes components as methods as well" do
+              resolution.a.should be_equal(resolution[:a])
+              resolution.b.should be_equal(resolution[:b])
+            end
           end
 
           describe ".inject" do
